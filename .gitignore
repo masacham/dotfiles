@@ -71,6 +71,8 @@ data
 !/.config/wezterm/
 !/.gitignore_global
 !/.gitconfig_shared
+!/screenshots/
+!/doc
 
 !/README.md
 !/LICENSE
