@@ -67,7 +67,8 @@ data
 !/.xprofile
 !/.xsessionrc
 !/.config/
-!/.config/**
+!/.config/nvim/
+!/.config/wezterm/
 !/.gitignore_global
 !/.gitconfig_shared
 
