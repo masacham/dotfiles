@@ -19,13 +19,13 @@ $Cyan = "Cyan"
 
 function Write-Status {
     param([string]$Symbol, [string]$Message, [string]$Color = "White")
-    Write-Host "$Symbol $Message" -ForegroundColor $Color
+    Write-Host "[$Symbol] $Message" -ForegroundColor $Color
 }
 
 function Ensure-AdminPrivileges {
     $principal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
     if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-        Write-Status "✗" "This script requires Administrator privileges!" $Red
+        Write-Status "X" "This script requires Administrator privileges!" $Red
         Write-Host "Please run PowerShell as Administrator and try again." -ForegroundColor Yellow
         exit 1
     }
@@ -34,7 +34,7 @@ function Ensure-AdminPrivileges {
 function Create-BackupDir {
     if (-not (Test-Path $BackupDir)) {
         New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
-        Write-Status "✓" "Backup directory created: $BackupDir" $Green
+        Write-Status "OK" "Backup directory created: $BackupDir" $Green
     }
 }
 
@@ -43,7 +43,7 @@ function Backup-Item {
     if (Test-Path $Path) {
         $BackupPath = Join-Path $BackupDir (Split-Path -Leaf $Path)
         Copy-Item -Path $Path -Destination $BackupPath -Recurse -Force
-        Write-Status "→" "Backed up: $Path" $Yellow
+        Write-Status ">>" "Backed up: $Path" $Yellow
     }
 }
 
@@ -57,7 +57,7 @@ function Create-Symlink {
     $Target = $Target -replace "/", "\"
     
     if (-not (Test-Path $Source)) {
-        Write-Status "✗" "Source not found: $Source" $Red
+        Write-Status "X" "Source not found: $Source" $Red
         return $false
     }
     
@@ -78,17 +78,19 @@ function Create-Symlink {
         }
     }
     
+
     # Create symlink
     try {
         New-Item -ItemType SymbolicLink -Path $Target -Target $Source -Force | Out-Null
-        Write-Status "✓" "Symlink created: $Target -> $Source" $Green
+        Write-Status "OK" "Symlink created: $Target -> $Source" $Green
         return $true
     }
     catch {
-        Write-Status "✗" "Failed to create symlink: $_" $Red
+        Write-Status "X" "Failed to create symlink: $_" $Red
         return $false
     }
-}
+} 
+
 
 function Remove-Symlink {
     param([string]$Path)
@@ -98,7 +100,7 @@ function Remove-Symlink {
     if (Test-Path $Path) {
         if ((Get-Item $Path).LinkType -eq "SymbolicLink") {
             Remove-Item -Path $Path -Force
-            Write-Status "✓" "Symlink removed: $Path" $Green
+            Write-Status "OK" "Symlink removed: $Path" $Green
         }
     }
 }
@@ -112,16 +114,16 @@ function Verify-Symlink {
         $Item = Get-Item $Path
         if ($Item.LinkType -eq "SymbolicLink") {
             $Target = (Get-Item $Path).Target
-            Write-Status "✓" "$Path -> $Target" $Green
+            Write-Status "OK" "$Path -> $Target" $Green
             return $true
         }
         else {
-            Write-Status "→" "$Path (regular file/directory)" $Yellow
+            Write-Status ">>" "$Path (regular file/directory)" $Yellow
             return $true
         }
     }
     else {
-        Write-Status "✗" "$Path (not found)" $Red
+        Write-Status "X" "$Path (not found)" $Red
         return $false
     }
 }

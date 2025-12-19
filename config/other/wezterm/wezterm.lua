@@ -28,5 +28,5 @@ return {
 	tab_bar_at_bottom = false,
 
 	leader = { key = "a", mods = "CTRL", timeout_milliseconds = 2000 },
-	
+
 }
