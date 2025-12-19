@@ -131,12 +131,13 @@ function Create-Symlinks {
     Create-BackupDir
     
     $LocalAppData = $env:LOCALAPPDATA
+    $ConfigDir = Join-Path $env:USERPROFILE ".config"
     
     # Editor config - Neovim uses LOCALAPPDATA
     Create-Symlink "$DotfilesDir\config\editor\nvim" "$LocalAppData\nvim"
     
-    # Terminal config - Wezterm uses .config
-    Create-Symlink "$DotfilesDir\config\other\wezterm" "$LocalAppData\wezterm"
+    # Terminal config - Wezterm uses ~/.config
+    Create-Symlink "$DotfilesDir\config\other\wezterm" "$ConfigDir\wezterm"
     
     Write-Host "`nDone!`n" -ForegroundColor $Green
 }
@@ -145,9 +146,10 @@ function Remove-Symlinks {
     Write-Host "`nRemoving symlinks...`n" -ForegroundColor $Yellow
     
     $LocalAppData = $env:LOCALAPPDATA
+    $ConfigDir = Join-Path $env:USERPROFILE ".config"
     
     Remove-Symlink "$LocalAppData\nvim"
-    Remove-Symlink "$LocalAppData\wezterm"
+    Remove-Symlink "$ConfigDir\wezterm"
     
     Write-Host "`nDone!`n" -ForegroundColor $Green
 }
@@ -156,9 +158,10 @@ function Verify-Symlinks {
     Write-Host "`nVerifying symlinks...`n" -ForegroundColor $Yellow
     
     $LocalAppData = $env:LOCALAPPDATA
+    $ConfigDir = Join-Path $env:USERPROFILE ".config"
     
     Verify-Symlink "$LocalAppData\nvim"
-    Verify-Symlink "$LocalAppData\wezterm"
+    Verify-Symlink "$ConfigDir\wezterm"
     
     Write-Host ""
 }
