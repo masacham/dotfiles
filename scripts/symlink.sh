@@ -5,10 +5,26 @@ set -e
 DOTFILES_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )"
 BACKUP_DIR="${HOME}/.dotfiles-backup"
 
+# Detect OS
+detect_os() {
+    if grep -qi microsoft /proc/version &> /dev/null; then
+        echo "wsl"
+    elif grep -qi "^ID=" /etc/os-release 2>/dev/null | grep -q "ubuntu\|debian"; then
+        echo "linux"
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    else
+        echo "unknown"
+    fi
+}
+
+OS=$(detect_os)
+
 # Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Help function
@@ -22,6 +38,7 @@ OPTIONS:
     -h, --help      Show this help message
 
 Default behavior: Create symlinks
+Current OS detected: $OS
 HELP
 }
 
@@ -94,10 +111,9 @@ verify_symlink() {
     fi
 }
 
-# Main operations
-create_symlinks() {
-    echo -e "${YELLOW}Creating symlinks...${NC}\n"
-    create_backup_dir
+# Create symlinks for Linux/WSL
+create_symlinks_linux() {
+    echo -e "${YELLOW}Creating symlinks for Linux/WSL...${NC}\n"
     
     # Shell config
     create_symlink "$DOTFILES_DIR/config/shell/.zshrc" "$HOME/.zshrc"
@@ -112,13 +128,41 @@ create_symlinks() {
     # Git config
     create_symlink "$DOTFILES_DIR/config/git/.gitconfig" "$HOME/.gitconfig" 2>/dev/null || true
     
-    # Other config
+    # Terminal config
     create_symlink "$DOTFILES_DIR/config/other/.tmux.conf" "$HOME/.tmux.conf"
-    create_symlink "$DOTFILES_DIR/config/other/wezterm" "$HOME/.config/wezterm"
-    
-    echo -e "\n${GREEN}Done!${NC}"
+    create_symlink "$DOTFILES_DIR/config/other/wezterm" "$HOME/.config/wezterm" 2>/dev/null || true
 }
 
+# Create symlinks for WSL (also handle Windows paths)
+create_symlinks_wsl() {
+    echo -e "${BLUE}[WSL Mode]${NC} Creating symlinks...\n"
+    create_symlinks_linux
+    
+    # Additional WSL-specific setup
+    echo -e "\n${YELLOW}WSL environment detected.${NC}"
+    echo -e "For Windows Neovim/Wezterm, manually configure or use Windows paths."
+}
+
+# Create symlinks for macOS
+create_symlinks_macos() {
+    echo -e "${YELLOW}Creating symlinks for macOS...${NC}\n"
+    
+    # Shell config
+    create_symlink "$DOTFILES_DIR/config/shell/.zshrc" "$HOME/.zshrc"
+    create_symlink "$DOTFILES_DIR/config/shell/.bashrc" "$HOME/.bashrc" 2>/dev/null || true
+    
+    # Editor config
+    create_symlink "$DOTFILES_DIR/config/editor/nvim" "$HOME/.config/nvim"
+    create_symlink "$DOTFILES_DIR/config/editor/.vimrc" "$HOME/.vimrc" 2>/dev/null || true
+    
+    # Git config
+    create_symlink "$DOTFILES_DIR/config/git/.gitconfig" "$HOME/.gitconfig" 2>/dev/null || true
+    
+    # Terminal config
+    create_symlink "$DOTFILES_DIR/config/other/.tmux.conf" "$HOME/.tmux.conf"
+}
+
+# Remove symlinks
 remove_symlinks() {
     echo -e "${YELLOW}Removing symlinks...${NC}\n"
     
@@ -135,6 +179,7 @@ remove_symlinks() {
     echo -e "\n${GREEN}Done!${NC}"
 }
 
+# Verify symlinks
 verify_symlinks() {
     echo -e "${YELLOW}Verifying symlinks...${NC}\n"
     
@@ -151,7 +196,7 @@ verify_symlinks() {
     echo ""
 }
 
-# Parse arguments
+# Main operations
 case "${1:-}" in
     --remove)
         remove_symlinks
@@ -163,6 +208,18 @@ case "${1:-}" in
         show_help
         ;;
     *)
-        create_symlinks
+        create_backup_dir
+        case "$OS" in
+            wsl)
+                create_symlinks_wsl
+                ;;
+            macos)
+                create_symlinks_macos
+                ;;
+            linux|*)
+                create_symlinks_linux
+                ;;
+        esac
+        echo -e "\n${GREEN}Done!${NC}"
         ;;
 esac
