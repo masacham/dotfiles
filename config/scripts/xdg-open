@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# WSL wrapper for opening URLs in Windows browser
+URL="$1"
+
+if grep -qi microsoft /proc/version &> /dev/null; then
+  # WSL environment
+  cmd.exe /c "start $URL" 2>/dev/null
+else
+  # Linux environment - use default
+  command -v xdg-open >/dev/null && xdg-open "$URL" || true
+fi
