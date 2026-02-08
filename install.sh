@@ -1,6 +1,6 @@
 #!/bin/bash
 # 配置したい設定ファイル
-dotfiles=(.zshrc)
+dotfiles=(.zshrc .p10k.zsh)
 
 # .zshrc と .tmux.conf という設定ファイルのシンボリックリンクを
 # ホームディレクトリ直下に作成する
