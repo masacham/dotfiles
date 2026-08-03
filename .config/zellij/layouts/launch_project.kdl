@@ -1,0 +1,10 @@
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane cwd="$TARGET_DIR" command="nvim" 
+    pane split_direction="vertical" {
+        pane cwd="$TARGET_DIR"
+        pane cwd="$TARGET_DIR" name="terminal"
+    }
+}

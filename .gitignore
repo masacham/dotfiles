@@ -1,0 +1,5 @@
+# 壁紙などの大きなバイナリは管理しない
+.config/hypr/*.png
+
+# install.sh が既存設定を退避する際のバックアップ
+backup/
