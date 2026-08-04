@@ -1,30 +1,30 @@
 {
     "label" : "lock",
     "action" : "LC_TIME=en_US.UTF-8 hyprlock",
-    "text" : "Lock",
+    "text" : "",
     "keybind" : "l"
 }
 {
     "label" : "logout",
     "action" : "hyprctl dispatch exit",
-    "text" : "Logout",
+    "text" : "",
     "keybind" : "e"
 }
 {
     "label" : "suspend",
     "action" : "hyprlock & systemctl suspend",
-    "text" : "Suspend",
+    "text" : "",
     "keybind" : "s"
 }
 {
     "label" : "reboot",
     "action" : "systemctl reboot",
-    "text" : "Reboot",
+    "text" : "",
     "keybind" : "r"
 }
 {
     "label" : "shutdown",
     "action" : "systemctl poweroff",
-    "text" : "Shutdown",
+    "text" : "",
     "keybind" : "p"
 }
