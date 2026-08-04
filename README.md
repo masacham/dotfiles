@@ -11,6 +11,7 @@ masacham's dotfiles for Arch Linux (Hyprland) environment
 - ファイル管理: `.config/yazi/`, `.config/zellij/`
 - フォント: `.config/fontconfig/`
 - GTKテーマ: `.config/gtk-3.0/settings.ini` (ダークテーマ)
+- 日本語入力: `.config/fcitx5/` (CapsLockで全角/半角切替)
 
 ## インストール
 ```sh
