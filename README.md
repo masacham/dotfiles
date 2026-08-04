@@ -10,6 +10,7 @@ masacham's dotfiles for Arch Linux (Hyprland) environment
 - エディタ: `.config/nvim/` (LazyVim)
 - ファイル管理: `.config/yazi/`, `.config/zellij/`
 - フォント: `.config/fontconfig/`
+- GTKテーマ: `.config/gtk-3.0/settings.ini` (ダークテーマ)
 
 ## インストール
 ```sh
