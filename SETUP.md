@@ -84,4 +84,10 @@ AUR:   man-pages-ja wlogout
 - `hyprlock.png`(壁紙) はリポジトリに含めない。`~/.config/hypr/` に手動配置
 - `~/.local/bin/launch_dev.sh` は旧プロジェクトへのsymlink。不要なら削除可
 - 明るさキー(brightnessctl)はデスクトップのため実質使えない死コード
-- 未対応項目: ファイアウォール(ufw)、SSDのTRIM(`fstrim.timer`)、pacmanのColor有効化、reflectorミラー最適化、hypridleの実サスペンド
+- 未対応項目: SSDのTRIM(`fstrim.timer`)、pacmanのColor有効化、reflectorミラー最適化、hypridleの実サスペンド
+
+## 9. ファイアウォール (ufw)
+- `ufw` を導入し有効化。デフォルト方針: **着信=拒否 / 発信=許可**
+- `SSH (22/tcp)` のみ許可
+- `systemctl enable --now ufw` 済み(再起動後も維持)
+- 以前は待受ポートがゼロで「たまたま安全」だった。今後サービスを公開する際は `sudo ufw allow <port>` で個別許可
