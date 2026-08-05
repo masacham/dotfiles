@@ -84,12 +84,13 @@ AUR:   man-pages-ja wlogout
 - `hyprlock.png`(壁紙) はリポジトリに含めない。`~/.config/hypr/` に手動配置
 - `~/.local/bin/launch_dev.sh` は旧プロジェクトへのsymlink。不要なら削除可
 - 明るさキー(brightnessctl)はデスクトップのため実質使えない死コード
-## 12. hypridleの実サスペンド
-- hypridleのタイムアウトを3段階に拡張:
+## 12. hypridleのアイドル設定
+- hypridleのタイムアウト構成:
   - **600s** → ロック (hyprlock)
   - **900s** → 画面オフ (dpms off)
-  - **1200s** → 実サスペンド (`systemctl suspend`。S3対応を確認済み)
-- `before_sleep_cmd = hyprlock` で**復帰時はロック画面**が出る
+- **自動サスペンドは無効化**: 将来ノートPCからのSSHアクセスに備え、PCは常時起動にした
+  - 手動でのサスペンドは `systemctl suspend`(S3対応確認済み)
+  - 有線NIC `enp0s31f6` はWake-on-LAN対応(`wakeup=enabled`)。将来必要になれば有効化可能
 - 再起動は `pkill hypridle && hyprctl dispatch exec hypridle`
 
 ## 11. pacman最適化
