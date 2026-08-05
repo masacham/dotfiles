@@ -84,7 +84,12 @@ AUR:   man-pages-ja wlogout
 - `hyprlock.png`(壁紙) はリポジトリに含めない。`~/.config/hypr/` に手動配置
 - `~/.local/bin/launch_dev.sh` は旧プロジェクトへのsymlink。不要なら削除可
 - 明るさキー(brightnessctl)はデスクトップのため実質使えない死コード
-- 未対応項目: SSDのTRIM(`fstrim.timer`)、pacmanのColor有効化、reflectorミラー最適化、hypridleの実サスペンド
+- 未対応項目: pacmanのColor有効化、reflectorミラー最適化、hypridleの実サスペンド
+
+## 10. SSDのTRIM
+- NVMe (INTEL SSDPEKNW512G8, 512GB) を確認
+- `fstrim.timer` を有効化(enabled + active)。毎週自動でTRIM実行
+- 手動実行は `sudo fstrim -av`
 
 ## 9. ファイアウォール (ufw)
 - `ufw` を導入し有効化。デフォルト方針: **着信=拒否 / 発信=許可**
