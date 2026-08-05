@@ -5,7 +5,7 @@ masacham's dotfiles for Arch Linux (Hyprland) environment
 - シェル: `.zshrc`, `.p10k.zsh`, `.zshenv`, `.bashrc`, `.bash_profile`
 - git: `.gitconfig`
 - Hyprland: `.config/hypr/`
-- デスクトップ: `.config/waybar/`, `.config/swaync/`, `.config/rofi/`, `.config/fnott/`, `.config/waypaper/`, `.config/wlogout/`
+- デスクトップ: `.config/waybar/`, `.config/swaync/`, `.config/rofi/`, `.config/fnott/`, `.config/waypaper/`, `.config/wlogout/`, `.config/xdg-desktop-portal/`
 - ターミナル: `.config/ghostty/`
 - エディタ: `.config/nvim/` (LazyVim)
 - ファイル管理: `.config/yazi/`, `.config/zellij/`

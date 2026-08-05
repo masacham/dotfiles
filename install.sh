@@ -9,7 +9,7 @@ BACKUP_DIR="$DOTFILES/backup/$(date +%Y%m%d_%H%M%S)"
 home_files=(.zshrc .p10k.zsh .zshenv .gitconfig .bashrc .bash_profile)
 
 # ~/.config 配下に配置するディレクトリ
-config_dirs=(hypr waybar swaync rofi nvim ghostty yazi zellij fontconfig waypaper fnott gtk-3.0 fcitx5 wlogout)
+config_dirs=(hypr waybar swaync rofi nvim ghostty yazi zellij fontconfig waypaper fnott gtk-3.0 fcitx5 wlogout xdg-desktop-portal)
 
 link() {
   local target="$1"

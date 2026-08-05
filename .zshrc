@@ -86,7 +86,7 @@ bindkey "^N" history-beginning-search-forward-end
 #################### ALIAS #####################
 
 # lsコマンドのalias関連
-alias ls='exa -l'
+alias ls='eza -l'
 alias la='ls -lA'
 alias ll='ls -lG'
 

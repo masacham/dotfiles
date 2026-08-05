@@ -28,14 +28,14 @@
 | **Super+Shift+Q** | **電源メニュー (wlogout)** |
 | Super+Q | ウィンドウを閉じる |
 
-## 今回のセッションで実施した設定
+## 実施した設定
 
 ### 1. dotfiles整理 (初期)
 - `.zshrc`, `.p10k.zsh` のみだったリポジトリに、シェル設定(`.zshenv`, `.gitconfig`, `.bashrc`, `.bash_profile`)と `~/.config/` 配下の主要設定を全て追加
 - `install.sh`: 全ファイル/ディレクトリをホームにシンボリックリンク。既存設定は `backup/<日時>/` に退避
 - `.gitignore`: 壁紙(`hyprlock.png`)と `backup/` を除外
 - `.zshrc` の p10k instant prompt を先頭付近へ移動 (末尾だと動作しない)
-- `ls` エイリアスは `exa` (`eza` が後継、置き換え候補)
+- `ls` エイリアスは `eza` (旧 `exa` は開発停止)
 
 ### 2. Bluetoothキーボード
 - bluez導入済み(既存)。`bluetoothctl` でペアリング
@@ -70,10 +70,45 @@
 - **`wlogout -b 5` 必須**: デフォルトは1行3列グリッドで、5ボタンだと6マス目が空白パネルになる
 - デザイン: 透明ボタン+中央アイコン (GTKは `max-width` や `padding: %` 非対応)
 
+### 9. デスクトップ基盤の補強
+- **xdg-desktop-portal-hyprland** 導入: ファイルダイアログ・画面共有(Zoom/Meet)が正しく動く
+  - 設定: `~/.config/xdg-desktop-portal/hyprland-portals.conf`(hyprland優先)
+- **hyprpolkitagent** 導入: GUIアプリのpolkit認証ダイアログ
+  - `systemctl --user enable --now hyprpolkitagent` で起動(systemdユーザーサービス)。バイナリは `/usr/lib/hyprpolkitagent/`
+- **network-manager-applet** 導入: WiFi等のネットワーク管理トレイ
+  - hyprland.conf で `exec-once = nm-applet` を有効化(waybarのtrayモジュールに表示)
+- **exa→eza**: `exa` は開発停止。`.zshrc` のlsエイリアスを後継の `eza` に更新
+
+### 10. ファイアウォール (ufw)
+- `ufw` を導入し有効化。デフォルト方針: **着信=拒否 / 発信=許可**
+- `SSH (22/tcp)` のみ許可
+- `systemctl enable --now ufw` 済み(再起動後も維持)
+- 以前は待受ポートがゼロで「たまたま安全」だった。今後サービスを公開する際は `sudo ufw allow <port>` で個別許可
+
+### 11. SSDのTRIM
+- NVMe (INTEL SSDPEKNW512G8, 512GB) を確認
+- `fstrim.timer` を有効化(enabled + active)。毎週自動でTRIM実行
+- 手動実行は `sudo fstrim -av`
+
+### 12. pacman最適化
+- `/etc/pacman.conf` で `Color` を有効化 (`ParallelDownloads=5` は既存)
+- `reflector` 導入。日本・直近更新・高速ミラー上位10件で `/etc/pacman.d/mirrorlist` を生成(バックアップ: `mirrorlist.bak`)
+- `reflector.timer` 有効化(enabled + active)。毎週自動でミラーリスト再生成
+- パッケージ更新自体は手動 `pacman -Syu` のまま
+
+### 13. hypridleのアイドル設定
+- hypridleのタイムアウト構成:
+  - **600s** → ロック (hyprlock)
+  - **900s** → 画面オフ (dpms off)
+- **自動サスペンドは無効化**: 将来ノートPCからのSSHアクセスに備え、PCは常時起動にした
+  - 手動でのサスペンドは `systemctl suspend`(S3対応確認済み)
+  - 有線NIC `enp0s31f6` はWake-on-LAN対応(`wakeup=enabled`)。将来必要になれば有効化可能
+- 再起動は `pkill hypridle && hyprctl dispatch exec hypridle`
+
 ## インストールしたパッケージ (このセッション)
 
 ```
-pacman: grim slurp cliphist man-db pkgconf blueman
+pacman: grim slurp cliphist man-db pkgconf blueman xdg-desktop-portal-hyprland hyprpolkitagent network-manager-applet ufw reflector
 AUR:   man-pages-ja wlogout
 ```
 
@@ -84,28 +119,4 @@ AUR:   man-pages-ja wlogout
 - `hyprlock.png`(壁紙) はリポジトリに含めない。`~/.config/hypr/` に手動配置
 - `~/.local/bin/launch_dev.sh` は旧プロジェクトへのsymlink。不要なら削除可
 - 明るさキー(brightnessctl)はデスクトップのため実質使えない死コード
-## 12. hypridleのアイドル設定
-- hypridleのタイムアウト構成:
-  - **600s** → ロック (hyprlock)
-  - **900s** → 画面オフ (dpms off)
-- **自動サスペンドは無効化**: 将来ノートPCからのSSHアクセスに備え、PCは常時起動にした
-  - 手動でのサスペンドは `systemctl suspend`(S3対応確認済み)
-  - 有線NIC `enp0s31f6` はWake-on-LAN対応(`wakeup=enabled`)。将来必要になれば有効化可能
-- 再起動は `pkill hypridle && hyprctl dispatch exec hypridle`
-
-## 11. pacman最適化
-- `/etc/pacman.conf` で `Color` を有効化 (`ParallelDownloads=5` は既存)
-- `reflector` 導入。日本・直近更新・高速ミラー上位10件で `/etc/pacman.d/mirrorlist` を生成(バックアップ: `mirrorlist.bak`)
-- `reflector.timer` 有効化(enabled + active)。毎週自動でミラーリスト再生成
-- パッケージ更新自体は手動 `pacman -Syu` のまま
-
-## 10. SSDのTRIM
-- NVMe (INTEL SSDPEKNW512G8, 512GB) を確認
-- `fstrim.timer` を有効化(enabled + active)。毎週自動でTRIM実行
-- 手動実行は `sudo fstrim -av`
-
-## 9. ファイアウォール (ufw)
-- `ufw` を導入し有効化。デフォルト方針: **着信=拒否 / 発信=許可**
-- `SSH (22/tcp)` のみ許可
-- `systemctl enable --now ufw` 済み(再起動後も維持)
-- 以前は待受ポートがゼロで「たまたま安全」だった。今後サービスを公開する際は `sudo ufw allow <port>` で個別許可
+- 未対応候補: システムスナップショット(timeshift等)、blueman-appletのトレイ起動、hyprpicker/hyprsunset
