@@ -84,7 +84,13 @@ AUR:   man-pages-ja wlogout
 - `hyprlock.png`(壁紙) はリポジトリに含めない。`~/.config/hypr/` に手動配置
 - `~/.local/bin/launch_dev.sh` は旧プロジェクトへのsymlink。不要なら削除可
 - 明るさキー(brightnessctl)はデスクトップのため実質使えない死コード
-- 未対応項目: pacmanのColor有効化、reflectorミラー最適化、hypridleの実サスペンド
+- 未対応項目: hypridleの実サスペンド
+
+## 11. pacman最適化
+- `/etc/pacman.conf` で `Color` を有効化 (`ParallelDownloads=5` は既存)
+- `reflector` 導入。日本・直近更新・高速ミラー上位10件で `/etc/pacman.d/mirrorlist` を生成(バックアップ: `mirrorlist.bak`)
+- `reflector.timer` 有効化(enabled + active)。毎週自動でミラーリスト再生成
+- パッケージ更新自体は手動 `pacman -Syu` のまま
 
 ## 10. SSDのTRIM
 - NVMe (INTEL SSDPEKNW512G8, 512GB) を確認
